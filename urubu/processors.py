@@ -62,10 +62,12 @@ class ContentProcessor(object):
         # there is a strange interaction between smarty and reference links that start on a new line
         # disabling smarty for now...
         # extensions = ['extra', 'codehilite', 'headerid', 'toc', 'smarty', tableclass, projectref]
-        extensions = ['extra', 'codehilite', 'toc', 
+        extensions = ['codehilite', 'toc',
                       dlclass, tableclass, projectref, extractanchors]
         if self.site['mark_tag_support']:
             extensions.append(marktag)
+        if self.site['mark_extra_support']:
+            extensions.append('extra')
         extension_configs = {'codehilite': [('guess_lang', 'False'),
                                             ('linenums', 'False')],
                              'toc': [('baselevel', 2)]
@@ -73,7 +75,7 @@ class ContentProcessor(object):
         self.md = markdown.Markdown(extensions=extensions,
                                     extension_configs=extension_configs)
         self.md.site = self.site
-        self.md.anchors = project.anchors 
+        self.md.anchors = project.anchors
         env = self.env = jinja2.Environment(loader=jinja2.FileSystemLoader(layoutdir),
                                             lstrip_blocks=True,
                                             trim_blocks=True
@@ -171,7 +173,7 @@ class ContentProcessor(object):
         if not os.path.isdir(tsd):
             return
         tsc = os.path.join(tsd, tipuesearch_content)
-        items = [] 
+        items = []
         # use tag index files if they have been rendered
         taglist = []
         if tag_layout in self.templates:
@@ -185,13 +187,13 @@ class ContentProcessor(object):
             item = {'text' : info['text'],
                     'title': info['title'],
                     'url'  : info['url'],
-                    'tags' : tags} 
+                    'tags' : tags}
             items.append(item)
         obj = {'pages': items}
         with open(tsc, 'w', encoding='utf-8') as fd:
             # json.dump is buggy in Python2 -- use workaround
-            # print json.dumps(obj, ensure_ascii=False, indent=4) 
-            data = json.dumps(obj, fd, ensure_ascii=False, indent=4, sort_keys=True) 
+            # print json.dumps(obj, ensure_ascii=False, indent=4)
+            data = json.dumps(obj, fd, ensure_ascii=False, indent=4, sort_keys=True)
             fd.write(text_type(data))
 
 

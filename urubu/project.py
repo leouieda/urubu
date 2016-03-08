@@ -82,6 +82,7 @@ class Project(object):
                      'link_ext': '.html',
                      'file_ext': '.html',
                      'mark_tag_support': True
+                     'mark_extra_support': True
                      }
         self.get_siteinfo()
 
